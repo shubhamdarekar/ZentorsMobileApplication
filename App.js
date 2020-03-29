@@ -10,6 +10,7 @@ import * as Font from 'expo-font';
 import { Provider } from 'react-redux'
 import store from './src/reduxFiles/store';
 import Test from './src/screens/test';
+import IntroSlider from './src/screens/introSliders';
 
 export default function App(props) {
 
@@ -22,7 +23,7 @@ export default function App(props) {
         require('./assets/icon.png'),
       ]),
       Font.loadAsync({
-        // 'pacifico':require('./assets/fonts/Pacifico.ttf'),
+        'pacifico':require('./assets/fonts/Pacifico.ttf'),
       }),
     ]);
   }
@@ -50,7 +51,7 @@ export default function App(props) {
   else {
     return (
       <Provider store={store}>
-        <Test />
+        <IntroSlider/>
       </Provider>
     );
   }
