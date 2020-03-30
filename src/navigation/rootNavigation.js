@@ -2,15 +2,14 @@ import React, { useEffect } from 'react';
 import { View } from "react-native";
 import { connect } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
-
-
 import AnimatedLoader from 'react-native-animated-loader';
 
 
-import { setUser, getUser, removeUser, getFirstTimeDone, setFirstTimeDone, loading } from '../reduxFiles/reduxActions';
-import  Test  from '../screens/test'
+import { getUser, getFirstTimeDone,loading } from '../reduxFiles/reduxActions';
 import IntroSlider from '../screens/introSliders/index'
+import AuthStack from './authStack';
+import AppStack from './appStack';
+
 
 const RootNavigation = (props) => {
     console.log(props);
@@ -33,7 +32,7 @@ const RootNavigation = (props) => {
         source={require("../../assets/animations/loadingAnimation.json")}
         />
         <NavigationContainer>
-            {props.user? <Test/>:( props.firstTimeUser ? <IntroSlider/> : <Test/>)}
+            {props.user? <AppStack/>:( props.firstTimeUser ? <IntroSlider/> : <AuthStack/>)}
         </NavigationContainer>
         </View>
     );
@@ -49,9 +48,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        login: (user) => dispatch(setUser(user)),
         retrieve: () => (dispatch(getUser()),dispatch(getFirstTimeDone())),
-        logout: () => (dispatch(removeUser())),
         setLoading: (bool) =>(dispatch(loading(bool)))
     }
 }
