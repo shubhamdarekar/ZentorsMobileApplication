@@ -2,6 +2,11 @@ import React from 'react';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import { View, Text, ImageBackground, Image, Dimensions as dim } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { setFirstTimeDone, loading } from '../../reduxFiles/reduxActions';
+import {connect} from 'react-redux';
+
+
+
 
 
 //asset imports
@@ -137,7 +142,13 @@ const doneButton = (props) => {
     )
 }
 
-const index = () => {
+
+
+const index = (props) => {
+    const _onDone =()=>{
+        props.setLoading(true);
+        props.firstTimeDone()
+    }
     return (
         <AppIntroSlider
             dotStyle={{
@@ -164,14 +175,21 @@ const index = () => {
                 borderBottomRightRadius: 10,
                 borderBottomLeftRadius: 10,
             }}
-
             renderDoneButton={doneButton}
             renderNextButton={nextButton}
             showSkipButton
             slides={slides}
             renderItem={renderer}
+            onDone = {_onDone}
         />
     );
 }
 
-export default index;
+const mapDispatchToProps = (dispatch) => {
+    return {
+        firstTimeDone :() => (dispatch(setFirstTimeDone())),
+        setLoading: (bool) =>(dispatch(loading(bool)))
+    }
+}
+
+export default  connect(null,mapDispatchToProps)(index);
