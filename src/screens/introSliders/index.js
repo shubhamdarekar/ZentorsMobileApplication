@@ -10,6 +10,9 @@ const backSlide2 = require('../../../assets/images/introSlider/backSlide2.png');
 const backSlide3 = require('../../../assets/images/introSlider/backSlide3.png');
 
 const icon = require('../../../assets/icon.png');
+const icon2 = require('../../../assets/icon2.png');
+const icon3 = require('../../../assets/icon3.png');
+
 
 
 
@@ -81,14 +84,14 @@ const slides = [
         key: 'second',
         title: 'Free Audio Call',
         subtitle: 'Hear tips & tricks directly from students enrolled at your dream school.',
-        icon:icon,
+        icon:icon2,
         background: backSlide2,
     },
     {
         key: 'third',
         title: 'Paid Counselling',
         subtitle: 'Resume review, SOP advice and more hands on advice.',
-        icon:icon,
+        icon:icon3,
         background: backSlide3,
     },
 ]
