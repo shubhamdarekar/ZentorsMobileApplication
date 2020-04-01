@@ -8,11 +8,13 @@ import { Ionicons } from '@expo/vector-icons';
 const backSlide1 = require('../../../assets/images/introSlider/backSlide1.png');
 const backSlide2 = require('../../../assets/images/introSlider/backSlide2.png');
 const backSlide3 = require('../../../assets/images/introSlider/backSlide3.png');
+// const karla = require('../../../assets/fonts/Karla-Regular.tff');
 const icon = require('../../../assets/icon.png');
 
 
 
 const renderer = (props) => {
+    console.log(props);
     return (
         <ImageBackground source={props.item.background} style={{ height: props.dimensions.height, width: props.dimensions.width }}>
             {props.index == 0 ?
@@ -24,20 +26,25 @@ const renderer = (props) => {
                     alignItems: 'center',
                 }}>
                     <View>
-                        <Text style={{ width: 200, flexWrap: 'wrap', textAlign: 'center' }}>Welcome to</Text>
+                        <Text style={{ width: 250, flexWrap: 'wrap', textAlign: 'center',fontSize: 30,textShadowColor:'#FFFFFF',textShadowRadius:10,fontWeight:'bold' }}>Welcome to</Text>
                         <Text style={{ 
-                            width: 200, 
+                            width: 250, 
                             flexWrap: 'wrap', 
                             textAlign: 'center', 
-                            fontFamily:'pacifico', 
+                            fontFamily:'pacifico',
+                            fontSize: 80,
+                            textShadowColor:'#FFFFFF',
+                            textShadowRadius:10,
+                             
                             }}>
                                 Zentors
                         </Text>
                     </View>
                     <Image source={props.item.icon}></Image>
                     <View>
-                        <Text style={{ width: 200, flexWrap: 'wrap', textAlign: 'center' }}>Lets Get Started</Text>
-                        <Text style={{ width: 200, flexWrap: 'wrap', textAlign: 'center' }}>Hear tips & tricks directly from students enrolled at your dream school.</Text>
+                        <Text style={{ width: 250, flexWrap: 'wrap', textAlign: 'center',fontSize: 30,fontWeight:'bold' }}>Lets Get Started</Text>
+                        <Text style={{ width: 250, flexWrap: 'wrap', textAlign: 'center',fontSize: 25 }}>Quick setup,</Text>
+                        <Text style={{ width: 250, flexWrap: 'wrap', textAlign: 'center',fontSize: 25 }}>Good defaults.</Text>
                     </View>
                 </View>
                 :
@@ -49,10 +56,10 @@ const renderer = (props) => {
                     alignItems: 'center',
                 }}>
                     <View>
-                        <Text style={{ width: 200, flexWrap: 'wrap', textAlign: 'center' }}>
+                        <Text style={{ width: 300, flexWrap: 'wrap', textAlign: 'center',fontSize: 40,textShadowColor:'#FFFFFF',textShadowRadius:10,fontWeight:'bold' }}>
                             {props.item.title}
                         </Text>
-                        <Text style={{ width: 200, flexWrap: 'wrap', textAlign: 'center' }}>
+                        <Text style={{ width: 300, flexWrap: 'wrap', textAlign: 'center',fontWeight:'bold',fontSize: 25 }}>
                             {props.item.subtitle}
                         </Text>
                     </View>
@@ -72,15 +79,15 @@ const slides = [
     },
     {
         key: 'second',
-        title: 'Quick setup, good defaults',
-        subtitle: 'Build your own itinerary based on your schedule, priorities and our hyper-personalization.',
+        title: 'Free Audio Call',
+        subtitle: 'Hear tips & tricks directly from students enrolled at your dream school.',
         icon:icon,
         background: backSlide2,
     },
     {
         key: 'third',
-        title: 'Quick setup, good defaults',
-        subtitle: 'Build your own itinerary based on your schedule, priorities and our hyper-personalization.',
+        title: 'Paid Counselling',
+        subtitle: 'Resume review, SOP advice and more hands on advice.',
         icon:icon,
         background: backSlide3,
     },
