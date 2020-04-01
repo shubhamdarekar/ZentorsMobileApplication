@@ -43,8 +43,8 @@ const renderer = (props) => {
                     <Image source={props.item.icon}></Image>
                     <View>
                         <Text style={{ width: 250, flexWrap: 'wrap', textAlign: 'center',fontSize: 30,fontWeight:'bold' }}>Lets Get Started</Text>
-                        <Text style={{ width: 250, flexWrap: 'wrap', textAlign: 'center',fontSize: 25 }}>Quick setup,</Text>
-                        <Text style={{ width: 250, flexWrap: 'wrap', textAlign: 'center',fontSize: 25 }}>Good defaults.</Text>
+                        <Text style={{ width: 250, flexWrap: 'wrap', textAlign: 'center',fontSize: 25,fontFamily:'karla' }}>Quick setup,</Text>
+                        <Text style={{ width: 250, flexWrap: 'wrap', textAlign: 'center',fontSize: 25,fontFamily:'karla' }}>Good defaults.</Text>
                     </View>
                 </View>
                 :
@@ -56,10 +56,10 @@ const renderer = (props) => {
                     alignItems: 'center',
                 }}>
                     <View>
-                        <Text style={{ width: 300, flexWrap: 'wrap', textAlign: 'center',fontSize: 40,textShadowColor:'#FFFFFF',textShadowRadius:10,fontWeight:'bold',fontFamily:'karla', }}>
+                        <Text style={{ width: 300, flexWrap: 'wrap', textAlign: 'center',fontSize: 40,textShadowColor:'#FFFFFF',fontWeight:'bold',textShadowRadius:10,fontFamily:'karla', }}>
                             {props.item.title}
                         </Text>
-                        <Text style={{ width: 300, flexWrap: 'wrap', textAlign: 'center',fontWeight:'bold',fontSize: 25,fontFamily:'karla' }}>
+                        <Text style={{ width: 300, flexWrap: 'wrap', textAlign: 'center',fontSize: 25,fontFamily:'karla' }}>
                             {props.item.subtitle}
                         </Text>
                     </View>
