@@ -8,7 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 const backSlide1 = require('../../../assets/images/introSlider/backSlide1.png');
 const backSlide2 = require('../../../assets/images/introSlider/backSlide2.png');
 const backSlide3 = require('../../../assets/images/introSlider/backSlide3.png');
-// const karla = require('../../../assets/fonts/Karla-Regular.tff');
+
 const icon = require('../../../assets/icon.png');
 
 
@@ -56,10 +56,10 @@ const renderer = (props) => {
                     alignItems: 'center',
                 }}>
                     <View>
-                        <Text style={{ width: 300, flexWrap: 'wrap', textAlign: 'center',fontSize: 40,textShadowColor:'#FFFFFF',textShadowRadius:10,fontWeight:'bold' }}>
+                        <Text style={{ width: 300, flexWrap: 'wrap', textAlign: 'center',fontSize: 40,textShadowColor:'#FFFFFF',textShadowRadius:10,fontWeight:'bold',fontFamily:'karla', }}>
                             {props.item.title}
                         </Text>
-                        <Text style={{ width: 300, flexWrap: 'wrap', textAlign: 'center',fontWeight:'bold',fontSize: 25 }}>
+                        <Text style={{ width: 300, flexWrap: 'wrap', textAlign: 'center',fontWeight:'bold',fontSize: 25,fontFamily:'karla' }}>
                             {props.item.subtitle}
                         </Text>
                     </View>

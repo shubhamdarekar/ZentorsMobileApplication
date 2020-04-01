@@ -24,6 +24,7 @@ export default function App(props) {
       ]),
       Font.loadAsync({
         'pacifico':require('./assets/fonts/Pacifico.ttf'),
+        'karla':require('./assets/fonts/Karla-Regular.ttf'),
       }),
     ]);
   }
