@@ -1,12 +1,23 @@
 import React from 'react';
-import { createStackNavigator,TransitionPresets } from '@react-navigation/stack';
-import Test from '../screens/test';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
+
+import DrawerStack from './drawerStack';
+import TabStack from './TabStack';
+
+
+
+
 
 const Stack = createStackNavigator();
+
+
+
+
 
 const AppStack = () => {
     return (
         <Stack.Navigator
+        lazy={false}
             screenOptions={{
                 headerMode: 'none',
                 header: () => null,
@@ -18,7 +29,7 @@ const AppStack = () => {
         >
             <Stack.Screen
                 name="Enter Mobile"
-                component={Test}
+                component={DrawerStack}
             />
         </Stack.Navigator>
     );

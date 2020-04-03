@@ -2,12 +2,15 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native';
 import { connect } from 'react-redux';
-import {removeUser} from '../reduxFiles/reduxActions'
+import {setUser, loading} from '../../reduxFiles/reduxActions'
 
 const Test = (props) => {
     return (
         <View style={styles.container}>
-        <Button title="Logout" onPress={props.logout}></Button>
+        <Button title="Login" onPress={()=>{
+            props.setLoading(true);
+            props.login();
+        }}></Button>
             <Text>Open up App.js to start working on your app!</Text>
         </View>
     );
@@ -23,7 +26,8 @@ const styles = StyleSheet.create({
 });
 const mapDispatchToProps = (dispatch) =>{
     return{
-        logout:()=> dispatch(removeUser())
+        setLoading : (bool) => dispatch(loading(bool)),
+        login:()=> dispatch(setUser({'username':'Shubham','email':'shubham.darekar5@gmail.com','photoUrl':'https://docs.expo.io/static/images/header-logo.png'})),
     }
 }
 export default connect(null,mapDispatchToProps)(Test);

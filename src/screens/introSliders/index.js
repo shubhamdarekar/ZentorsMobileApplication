@@ -22,7 +22,6 @@ const icon3 = require('../../../assets/icon3.png');
 
 
 const renderer = (props) => {
-    console.log(props);
     return (
         <ImageBackground source={props.item.background} style={{ height: props.dimensions.height, width: props.dimensions.width }}>
             {props.index == 0 ?
@@ -43,7 +42,6 @@ const renderer = (props) => {
                             fontSize: 80,
                             textShadowColor:'#FFFFFF',
                             textShadowRadius:10,
-                             
                             }}>
                                 Zentors
                         </Text>

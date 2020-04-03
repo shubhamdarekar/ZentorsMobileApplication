@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStackNavigator,TransitionPresets } from '@react-navigation/stack';
-import Test from '../screens/test';
+import Login from '../screens/loginSignupPages/login';
 
 const Stack = createStackNavigator();
 
@@ -18,7 +18,7 @@ const AuthStack = () => {
         >
             <Stack.Screen
                 name="Enter Mobile"
-                component={Test}
+                component={Login}
             />
         </Stack.Navigator>
     );

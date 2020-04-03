@@ -3,9 +3,10 @@ import { View } from "react-native";
 import { connect } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 import AnimatedLoader from 'react-native-animated-loader';
+import Constants from 'expo-constants';
 
 
-import { getUser, getFirstTimeDone,loading } from '../reduxFiles/reduxActions';
+import { getUser, getFirstTimeDone, loading } from '../reduxFiles/reduxActions';
 import IntroSlider from '../screens/introSliders/index'
 import AuthStack from './authStack';
 import AppStack from './appStack';
@@ -23,17 +24,21 @@ const RootNavigation = (props) => {
     }, []);
 
     return (
-        <View style ={{flex: 1,padding: 0,}}>
-        <AnimatedLoader 
-        visible={props.loading}
-        overlayColor="rgba(255,255,255,1)"
-        animationStyle={{width: 100,height: 100,}}
-        speed={1}
-        source={require("../../assets/animations/loadingAnimation.json")}
-        />
-        <NavigationContainer>
-            {props.user? <AppStack/>:( props.firstTimeUser ? <IntroSlider/> : <AuthStack/>)}
-        </NavigationContainer>
+        <View style={{ flex: 1, padding: 0, }}>
+            <AnimatedLoader
+                visible={props.loading}
+                overlayColor="rgba(255,255,255,1)"
+                animationStyle={{ width: 100, height: 100, }}
+                speed={1}
+                source={require("../../assets/animations/loadingAnimation.json")}
+            />
+            <View style={{
+                backgroundColor: 'transparent',
+                height: Constants.statusBarHeight,
+            }} />
+            <NavigationContainer>
+                {props.user ? <AppStack /> : (props.firstTimeUser ? <IntroSlider /> : <AuthStack />)}
+            </NavigationContainer>
         </View>
     );
 }
@@ -48,8 +53,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        retrieve: () => (dispatch(getUser()),dispatch(getFirstTimeDone())),
-        setLoading: (bool) =>(dispatch(loading(bool)))
+        retrieve: () => (dispatch(getUser()), dispatch(getFirstTimeDone())),
+        setLoading: (bool) => (dispatch(loading(bool)))
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(RootNavigation);

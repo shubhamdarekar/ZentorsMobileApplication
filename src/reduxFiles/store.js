@@ -8,6 +8,7 @@ const initialState = {
     loading : true,
     user : null,
     firstTimeUser : true,
+    paidServiceList : [],
 };
 
 const basicReducer =(state = initialState, action) =>{
