@@ -1,21 +1,30 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { AppLoading } from 'expo';
 import { Asset } from 'expo-asset';
 import * as Font from 'expo-font';
-// import { AsyncStorage } from 'react-native';
+import * as firebase from 'firebase';
+// import { useEffect } from 'react-native';
 
 
 
 
 import { Provider } from 'react-redux'
 import store from './src/reduxFiles/store';
-import RootNavigation from './src/navigation/rootNavigation'
+import RootNavigation from './src/navigation/rootNavigation';
+import ApiKeys from './src/constants/firebaseConfig';
 
 export default function App(props) {
 
   const [isLoadingComplete, setLoadingComplete] = useState(false);
   // AsyncStorage.removeItem('FIRST_TIME_USER');
+  useEffect(() => {
+    //init firebase
+    if (!firebase.apps.length) {
+      firebase.initializeApp(ApiKeys.FirebaseConfig);
+    };
+  }, [])
+
   async function loadResourcesAsync() {
     await Promise.all([
       Asset.loadAsync([
@@ -23,8 +32,8 @@ export default function App(props) {
         require('./assets/icon.png'),
       ]),
       Font.loadAsync({
-        'pacifico':require('./assets/fonts/Pacifico.ttf'),
-        'karla':require('./assets/fonts/Karla-Regular.ttf'),
+        'pacifico': require('./assets/fonts/Pacifico.ttf'),
+        'karla': require('./assets/fonts/Karla-Regular.ttf'),
       }),
     ]);
   }
@@ -52,7 +61,7 @@ export default function App(props) {
   else {
     return (
       <Provider store={store}>
-        <RootNavigation/>
+        <RootNavigation />
       </Provider>
     );
   }

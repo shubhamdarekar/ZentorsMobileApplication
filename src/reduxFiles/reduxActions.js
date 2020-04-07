@@ -1,4 +1,5 @@
 import { AsyncStorage } from 'react-native';
+import * as firebase from 'firebase';
 
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
@@ -57,6 +58,7 @@ export const getUser = () => dispatch =>{
 }
 
 export const removeUser = () => dispatch =>{
+    firebase.auth().signOut();
     AsyncStorage.removeItem('user').then(()=>{
         dispatch(loading(false));
         dispatch(logout());
