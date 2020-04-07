@@ -56,14 +56,7 @@ const DrawerContent = (props) => {
                     </View>
                 </View>
                 </Drawer.Section>
-                <Drawer.Section title="Your Paid services">
-                {()=>{
-                    for(var i = 0;i<5;i++){
-                        <Text>Hii</Text>
-                    }
-                }}
-
-                </Drawer.Section>
+                <Drawer.Section title="Your Paid services"></Drawer.Section>
                 {/* <Drawer.Section style={styles.drawerSection}>
                     <DrawerItemList {...props} />
                 </Drawer.Section> */}
