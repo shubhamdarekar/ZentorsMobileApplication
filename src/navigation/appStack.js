@@ -2,7 +2,8 @@ import React from 'react';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 
 import DrawerStack from './drawerStack';
-import TabStack from './TabStack';
+import { connect } from 'react-redux';
+import Details from '../screens/loginSignupPages/details';
 
 
 
@@ -14,7 +15,7 @@ const Stack = createStackNavigator();
 
 
 
-const AppStack = () => {
+const AppStack = (props) => {
     return (
         <Stack.Navigator
         lazy={false}
@@ -23,16 +24,28 @@ const AppStack = () => {
                 header: () => null,
                 mode: 'card',
                 ...TransitionPresets.SlideFromRightIOS,
-                gestureEnabled: true,
                 gestureDirection: 'horizontal',
             }}
+            initialRouteName={props.signup?"Details":"Drawer APP"}
         >
+        <Stack.Screen
+                name="Details"
+                component={Details}
+            />
             <Stack.Screen
-                name="Enter Mobile"
+                name="Drawer APP"
                 component={DrawerStack}
             />
         </Stack.Navigator>
     );
 }
 
-export default AppStack;
+const mapStateToProps = (state) => {
+    return {
+        signup : state.basic.signup,
+        role : state.basic.role,
+    }
+}
+
+
+export default connect(mapStateToProps)(AppStack);

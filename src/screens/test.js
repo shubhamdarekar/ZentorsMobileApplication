@@ -6,13 +6,13 @@ import {removeUser} from '../reduxFiles/reduxActions'
 import * as firebase from 'firebase';
 
 const Test = (props) => {
-    // console.log(firebase.auth().currentUser);
+    console.log(firebase.auth().currentUser);
     return (
         <View style={styles.container}>
         <Button title="Logout" onPress={()=>{
             props.logout();
         }}></Button>
-            <Text>Open up App.js to start working on your app!</Text>
+            <Text>Your role is {props.role == 0 ? 'mentee. Send Admin request to change it.' :'mentor.'}</Text>
         </View>
     );
 }
@@ -25,9 +25,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
 });
+const mapStatesToProps =(state)=>{
+    return{
+        role: state.basic.role,
+    }
+}
 const mapDispatchToProps = (dispatch) =>{
     return{
         logout:()=> dispatch(removeUser())
     }
 }
-export default connect(null,mapDispatchToProps)(Test);
+export default connect(mapStatesToProps,mapDispatchToProps)(Test);

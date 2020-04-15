@@ -4,6 +4,7 @@ import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import DrawerContent from './DrawerContent';
 import TabsStack from './TabStack';
+import Details from '../screens/loginSignupPages/details';
 
 
 const DrawerN = createDrawerNavigator()
@@ -12,7 +13,7 @@ const DrawerN = createDrawerNavigator()
 const DrawerStack = () => {
     return (
         <DrawerN.Navigator
-            lazy={false}
+            lazy={true}
             edgeWidth={500}
             minSwipeDistance={100}
             drawerType = {'back'}
@@ -28,6 +29,7 @@ const DrawerStack = () => {
             }
         >
             <DrawerN.Screen name='Test' component={TabsStack} />
+            <DrawerN.Screen name='Settings' component={Details} />
         </DrawerN.Navigator>
     )
 }

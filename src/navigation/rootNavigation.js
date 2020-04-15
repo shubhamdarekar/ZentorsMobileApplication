@@ -13,7 +13,6 @@ import AppStack from './appStack';
 
 
 const RootNavigation = (props) => {
-    console.log(props);
     // props.retrieve();
     const _setLoading = props.setLoading;
     const _retrieve = props.retrieve;

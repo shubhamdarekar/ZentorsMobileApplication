@@ -40,11 +40,11 @@ const DrawerContent = (props) => {
                     <Avatar.Image
                         source={{
                             uri:
-                                props.user.photoUrl,
+                                props.user.photoURL,
                         }}
                         size={60}
                     />
-                    <Title style={styles.title}>{props.user.username}</Title>
+                    <Title style={styles.title}>{props.user.displayName}</Title>
                     <Caption style={styles.caption}>{props.user.email}</Caption>
                     <View style={styles.row}>
                         <View style={styles.section}>
@@ -61,9 +61,11 @@ const DrawerContent = (props) => {
                     <DrawerItemList {...props} />
                 </Drawer.Section> */}
                 <Drawer.Section title="Preferences">
-                    <TouchableRipple onPress={() => { }}>
+                    <TouchableRipple onPress={() => { 
+                        props.navigation.navigate('Settings');
+                    }}>
                         <View style={styles.preference}>
-                            <Text>Dark Theme</Text>
+                            <Text>Settings</Text>
                         </View>
                     </TouchableRipple>
                     <TouchableRipple onPress={() => {

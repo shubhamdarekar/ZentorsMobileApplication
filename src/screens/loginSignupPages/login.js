@@ -7,7 +7,6 @@ import { setUser, loading } from '../../reduxFiles/reduxActions';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import {
-    FirebaseRecaptchaVerifierModal,
     FirebaseRecaptchaVerifier,
     FirebaseRecaptcha
 } from 'expo-firebase-recaptcha';
@@ -22,12 +21,12 @@ const Test = (props) => {
     const [number, setNumber] = useState('');
     const [visible, setVisible] = useState(false);
 
-    const isUserEqual=(googleUser, firebaseUser)=> {
+    const isUserEqual = (googleUser, firebaseUser) => {
         if (firebaseUser) {
             var providerData = firebaseUser.providerData;
             for (var i = 0; i < providerData.length; i++) {
                 if (providerData[i].providerId === firebase.auth.GoogleAuthProvider.PROVIDER_ID &&
-                    providerData[i].uid === googleUser.user.id ){
+                    providerData[i].uid === googleUser.user.id) {
                     // We don't need to reauth the Firebase connection.
                     return true;
                 }
@@ -37,9 +36,9 @@ const Test = (props) => {
     }
 
     const onSignIn = (googleUser) => {
-        console.log('Google Auth Response', googleUser);
+        // console.log('Google Auth Response', googleUser);
         // We need to register an Observer on Firebase Auth to make sure auth is initialized.
-        console.log(props)
+        // console.log(props)
         var unsubscribe = firebase.auth().onAuthStateChanged(function (firebaseUser) {
             unsubscribe();
             // Check if we are already signed-in Firebase with the correct user.
@@ -51,26 +50,64 @@ const Test = (props) => {
                 );
                 // Sign in with credential from the Google user.
                 firebase.auth().signInWithCredential(credential)
-                .then((result)=>{
-                    props.setLoading(true);
-                    props.login(result);
-                })
-                .catch(function (error) {
-                    console.log(error)
-                    // Handle Errors here.
-                    var errorCode = error.code;
-                    var errorMessage = error.message;
-                    // The email of the user's account used.
-                    var email = error.email;
-                    // The firebase.auth.AuthCredential type that was used.
-                    var credential = error.credential;
-                    // ...
-                });
+                    .then((result) => {
+                        props.setLoading(true);
+                        if (result.additionalUserInfo.isNewUser) {
+                            firebase
+                                .database()
+                                .ref('/users/' + result.user.uid)
+                                .set({
+                                    gmail: result.user.email,
+                                    profile_picture: result.additionalUserInfo.profile.picture,
+                                    locale: result.additionalUserInfo.profile.locale,
+                                    first_name: result.additionalUserInfo.profile.given_name,
+                                    family_name: result.additionalUserInfo.profile.family_name,
+                                    signup : true,
+                                    role: 0,
+                                    created_at: Date.now()
+                                }
+                                )
+                                .then(function (snapshot) {
+                                    props.login(firebase.auth().currentUser);
+                                })
+                                .catch(function (error) {
+                                    props.setLoading(false);
+                                    console.log(error);
+                                })
+                        }
+                        else {
+                            firebase
+                                .database()
+                                .ref('/users/' + result.user.uid)
+                                .update({
+                                    last_logged_in: Date.now()
+                                })
+                                .then(function () {
+                                    props.login(firebase.auth().currentUser);
+                                })
+                                .catch(function (error) {
+                                    props.setLoading(false);
+                                    console.log(error);
+                                })
+                        }
+                    })
+                    .catch(function (error) {
+                        props.setLoading(false);
+                        console.log(error)
+                        // Handle Errors here.
+                        var errorCode = error.code;
+                        var errorMessage = error.message;
+                        // The email of the user's account used.
+                        var email = error.email;
+                        // The firebase.auth.AuthCredential type that was used.
+                        var credential = error.credential;
+                        // ...
+                    });
             } else {
                 ToastAndroid.show('User already signed-in Firebase.', ToastAndroid.LONG);
                 props.setLoading(true);
                 console.log('User already signed-in Firebase.');
-                props.login(googleUser);
+                props.login(firebase.auth().currentUser);
             }
         });
     }
@@ -87,9 +124,12 @@ const Test = (props) => {
                 onSignIn(result);
                 return result.accessToken;
             } else {
+                props.setLoading(false);
+                ToastAndroid.show('Something went wrong \n Please Try again..', ToastAndroid.LONG);
                 return { cancelled: true };
             }
         } catch (e) {
+            props.setLoading(false);
             return { error: true };
         }
     }
@@ -116,10 +156,37 @@ const Test = (props) => {
             verificationId,
             code
         );
-        const authResult = await firebase.auth().signInWithCredential(credential);
-        console.log(authResult)
+        const result = await firebase.auth().signInWithCredential(credential);
+        console.log(result);
         props.setLoading(true);
-        props.login(authResult);
+        if (result.additionalUserInfo.isNewUser) {
+            firebase
+                .database()
+                .ref('/users/' + result.user.uid)
+                .set({
+                    phone: result.user.phoneNumber,
+                    gmail: result.user.email,
+                    profile_picture: result.user.photoURL,
+                    signup: true,
+                    role : 0,
+                    created_at: Date.now()
+                }
+                )
+                .then(function (snapshot) {
+
+                })
+            props.login(firebase.auth().currentUser);
+        }
+        else {
+            firebase
+                .database()
+                .ref('/users/' + result.user.uid)
+                .update({
+                    last_logged_in: Date.now()
+                })
+            props.login(firebase.auth().currentUser);
+        }
+
     };
 
     return (
@@ -143,9 +210,7 @@ const Test = (props) => {
                 // props.setLoading(true);
                 // props.login();
             }}></Button>
-            <Button title="Signin With Google" onPress={() => {
-                signInWithGoogleAsync()
-            }}></Button>
+
             {visible ? <View>
                 <TextInput
                     placeholder='OTP'
@@ -158,6 +223,10 @@ const Test = (props) => {
                         onPressConfirmVerificationCode();
                     }}
                 /></View> : <></>}
+            <Button title="SignIn With Google" onPress={() => {
+                props.setLoading(true);
+                signInWithGoogleAsync()
+            }}></Button>
         </View>
     );
 }

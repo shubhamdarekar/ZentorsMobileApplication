@@ -1,5 +1,5 @@
 import React from 'react';
-import { LOGIN, FIRST_TIME_DONE, CHANGE_LOADING_STATE, LOGOUT } from './reduxActions';
+import { LOGIN, FIRST_TIME_DONE, CHANGE_LOADING_STATE, LOGOUT, CHANGE_SIGNUP_STATE, GET_ROLE } from './reduxActions';
 
 import { createStore,combineReducers,applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
@@ -8,6 +8,8 @@ const initialState = {
     loading : true,
     user : null,
     firstTimeUser : true,
+    signup: false,
+    role: 0,
     paidServiceList : [],
 };
 
@@ -22,7 +24,7 @@ const basicReducer =(state = initialState, action) =>{
         case LOGIN:
             return {
                 ...state,
-                user : action.user
+                user : action.user,
             }
             break;
         case LOGOUT:
@@ -36,6 +38,18 @@ const basicReducer =(state = initialState, action) =>{
                 firstTimeUser : action.value
             }
             break;
+        case CHANGE_SIGNUP_STATE:
+            return {
+                ...state,
+                signup: action.value
+            }
+            break;
+        case GET_ROLE:
+            return{
+                ...state,
+                role: action.value
+            }
+        
         default:
             break;
     }
