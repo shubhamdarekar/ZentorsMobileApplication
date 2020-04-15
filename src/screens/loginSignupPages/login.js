@@ -68,6 +68,7 @@ const Test = (props) => {
                                 }
                                 )
                                 .then(function (snapshot) {
+                                    props.setSignup();
                                     props.login(firebase.auth().currentUser);
                                 })
                                 .catch(function (error) {
@@ -173,7 +174,7 @@ const Test = (props) => {
                 }
                 )
                 .then(function (snapshot) {
-
+                    props.setSignup();
                 })
             props.login(firebase.auth().currentUser);
         }
@@ -243,6 +244,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         setLoading: (bool) => dispatch(loading(bool)),
         login: (user) => dispatch(setUser(user)),
+        setSignup : () => dispatch(signupState(true)),
     }
 }
 export default connect(null, mapDispatchToProps)(Test);

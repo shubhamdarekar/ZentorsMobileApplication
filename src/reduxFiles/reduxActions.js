@@ -43,7 +43,7 @@ export const signupState = (bool) => (
     }
 )
 
-export const setRole = ( role )=>(
+export const setRole = (role) => (
     {
         type: GET_ROLE,
         value: role
@@ -53,7 +53,7 @@ export const setRole = ( role )=>(
 export const setUser = (user) => dispatch => {
     dispatch(loading(true));
     AsyncStorage.setItem('user', JSON.stringify(user)).then(() => {
-        firebase.database().ref("user/" + user.uid + '/signup').once('value').then((snapshot) => {
+        firebase.database().ref("/users/" + user.uid + '/signup').once('value').then((snapshot) => {
             console.log('Set called')
             dispatch(signupState(snapshot.val()))
             dispatch(loginUpdate(user))
@@ -79,9 +79,12 @@ export const getUser = () => dispatch => {
                 dispatch(setRole(snapshot.val().role || 0))
                 dispatch(loginUpdate(JSON.parse(user)));
                 dispatch(loading(false));
+            }).catch(error => {
+                console.log(error);
+                dispatch(loading(false));
             })
         }
-        else{
+        else {
             dispatch(loading(false));
         }
 
