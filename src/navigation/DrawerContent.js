@@ -56,6 +56,13 @@ const DrawerContent = (props) => {
                     </View>
                 </View>
                 </Drawer.Section>
+                <TouchableRipple onPress={() => { 
+                        props.navigation.navigate('Home');
+                    }}>
+                        <View style={styles.preference}>
+                            <Text>Home</Text>
+                        </View>
+                    </TouchableRipple>
                 <Drawer.Section title="Your Paid services"></Drawer.Section>
                 {/* <Drawer.Section style={styles.drawerSection}>
                     <DrawerItemList {...props} />

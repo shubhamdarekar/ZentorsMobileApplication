@@ -117,7 +117,7 @@ const Test = (props) => {
         try {
             const result = await Google.logInAsync({
                 androidClientId: '258755030225-bj9r4a89oh5tom9alr8h74eca8rk0arj.apps.googleusercontent.com',
-                // iosClientId: '258755030225-bj9r4a89oh5tom9alr8h74eca8rk0arj.apps.googleusercontent.com',
+                iosClientId: '258755030225-6fs8dk24orc5u5pst5clef66o4jra69f.apps.googleusercontent.com',
                 scopes: ['profile', 'email'],
             });
             console.log(result);

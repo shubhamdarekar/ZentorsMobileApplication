@@ -25,6 +25,7 @@ const AppStack = (props) => {
                 mode: 'card',
                 ...TransitionPresets.SlideFromRightIOS,
                 gestureDirection: 'horizontal',
+                gestureEnabled : false
             }}
             initialRouteName={props.signup?"Details":"Drawer APP"}
         >

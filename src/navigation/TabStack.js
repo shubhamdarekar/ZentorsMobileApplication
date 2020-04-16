@@ -5,6 +5,7 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import Test from '../screens/test';
+import messageStack from '../screens/messaging/messageStack';
 
 
 
@@ -43,7 +44,7 @@ const TabsStack = () => {
                             <MaterialCommunityIcons name="wechat" color={color} size={26} />
                         )
                     }}
-                    component={Test}
+                    component={messageStack}
                 />
             </Tabs.Navigator>
         </React.Fragment>
