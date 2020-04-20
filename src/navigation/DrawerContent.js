@@ -35,14 +35,14 @@ const DrawerContent = (props) => {
                 }
             >
             <Drawer.Section style={styles.drawerSection}>
-                <View style={styles.userInfoSection}>
+                <View style={[styles.userInfoSection]}>
 
                     <Avatar.Image
                         source={{
                             uri:
                                 props.user.photoURL,
                         }}
-                        size={60}
+                        size={80}
                     />
                     <Title style={styles.title}>{props.user.displayName}</Title>
                     <Caption style={styles.caption}>{props.user.email}</Caption>

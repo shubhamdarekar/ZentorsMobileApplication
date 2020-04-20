@@ -3,7 +3,6 @@ import { View } from "react-native";
 import { connect } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 import AnimatedLoader from 'react-native-animated-loader';
-import Constants from 'expo-constants';
 
 
 import { getUser, getFirstTimeDone, loading } from '../reduxFiles/reduxActions';
@@ -23,7 +22,7 @@ const RootNavigation = (props) => {
     }, []);
 
     return (
-        <View style={{ flex: 1, padding: 0, }}>
+        <View style={{ flex: 1 }}>
             <AnimatedLoader
                 visible={props.loading}
                 overlayColor="rgba(255,255,255,1)"
@@ -31,10 +30,6 @@ const RootNavigation = (props) => {
                 speed={1}
                 source={require("../../assets/animations/loadingAnimation.json")}
             />
-            <View style={{
-                backgroundColor: 'transparent',
-                height: Constants.statusBarHeight,
-            }} />
             <NavigationContainer>
                 {props.user ? <AppStack /> : (props.firstTimeUser ? <IntroSlider /> : <AuthStack />)}
             </NavigationContainer>

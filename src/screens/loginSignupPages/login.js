@@ -139,7 +139,7 @@ const Test = (props) => {
         const phoneNumber = number;
 
         const verifi = custom;
-        if (!verifi) return ToastAndroid.show('Captcha', ToastAndroid.LONG);
+        if (!verifi) return ToastAndroid.show('Captcha Pending', ToastAndroid.LONG);
         const applicationVerifier = new FirebaseRecaptchaVerifier(verifi);
         const phoneProvider = new firebase.auth.PhoneAuthProvider();
         const verificationId = await phoneProvider.verifyPhoneNumber(

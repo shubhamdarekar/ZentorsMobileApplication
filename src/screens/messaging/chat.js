@@ -10,7 +10,9 @@ const Chat = (props) => {
 
     const { itemId } = props.route.params;
 
-    const chatId = (firebase.auth().currentUser < itemId) ? firebase.auth().currentUser.uid + '' + itemId : itemId + '' + firebase.auth().currentUser.uid;
+    console.log((firebase.auth().currentUser.uid).localeCompare(itemId)>0);
+
+    const chatId = ((firebase.auth().currentUser.uid).localeCompare(itemId)>0) ? firebase.auth().currentUser.uid + '' + itemId : itemId + '' + firebase.auth().currentUser.uid;
 
     const ref = firebase.database().ref('/messages/' + chatId);
 
@@ -46,6 +48,7 @@ const Chat = (props) => {
             const message = {
                 text,
                 sender: user,
+                receiver : itemId,
                 timestamp: firebase.database.ServerValue.TIMESTAMP,
             };
             if(firstTime){

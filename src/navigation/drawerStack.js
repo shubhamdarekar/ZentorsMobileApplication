@@ -19,7 +19,7 @@ const DrawerStack = () => {
             drawerType = {'back'}
             drawerStyle={{
                 backgroundColor: '#cbcbcb',
-                width: 300,
+                width: 280,
             }}
             drawerContent={(props) => <DrawerContent {...props}
                 drawerContentOptions={{

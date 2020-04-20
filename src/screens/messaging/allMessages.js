@@ -5,19 +5,12 @@ import ItemChat from './itemChat';
 
 const allMessages = (props) => {
     const [chatList, setChatList] = useState([]);
-    const [refreshing, setRefreshing] = React.useState(false);
 
     function wait(timeout) {
         return new Promise(resolve => {
             setTimeout(resolve, timeout);
         });
     }
-
-    const onRefresh = React.useCallback(() => {
-        setRefreshing(true);
-
-        wait(2000).then(() => setRefreshing(false));
-    }, [refreshing]);
 
 
     const ref = firebase.database().ref('/users/' + firebase.auth().currentUser.uid + "/recentMessages");
@@ -61,7 +54,7 @@ const allMessages = (props) => {
                 keyExtractor={item => item}
             />
             <Button title='HII' onPress={() => {
-                props.navigation.navigate('Chat', { itemId: 'Fg5jNI7Ah0gVpKvWb2u5EmymJAE3' });
+                props.navigation.navigate('Chat', { itemId: 'eRCb1PTVz0O3ASR8jOoUW8F50m42' });
             }} />
         </View>
     );

@@ -25,7 +25,14 @@
       "supportsTablet": true
     },
     "android": {
-      "package":"com.zentors"
+      "googleServicesFile": "./src/constants/google-services.json",
+      "package": "com.zentors"
+    },
+    "androidStatusBar": {
+      "hidden": false,
+      "translucent": true,
+      "barStyle": "dark-content",
+      "backgroundColor": "#00000000"
     }
   }
 }
