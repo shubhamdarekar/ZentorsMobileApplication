@@ -54,7 +54,7 @@ const allMessages = (props) => {
                 keyExtractor={item => item}
             />
             <Button title='HII' onPress={() => {
-                props.navigation.navigate('Chat', { itemId: 'eRCb1PTVz0O3ASR8jOoUW8F50m42' });
+                props.navigation.navigate('Chat', { itemId: 'eAbArDWc2yRcGdnu4sq6iwKkGIn1' });
             }} />
         </View>
     );

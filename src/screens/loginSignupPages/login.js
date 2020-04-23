@@ -6,6 +6,7 @@ import { setUser, loading } from '../../reduxFiles/reduxActions';
 
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
+import 'firebase/firestore';
 import {
     FirebaseRecaptchaVerifier,
     FirebaseRecaptcha
@@ -20,6 +21,8 @@ const Test = (props) => {
     const [code, setCode] = useState('');
     const [number, setNumber] = useState('');
     const [visible, setVisible] = useState(false);
+
+    const firestoreDB = firebase.firestore();
 
     const isUserEqual = (googleUser, firebaseUser) => {
         if (firebaseUser) {
@@ -53,20 +56,16 @@ const Test = (props) => {
                     .then((result) => {
                         props.setLoading(true);
                         if (result.additionalUserInfo.isNewUser) {
-                            firebase
-                                .database()
-                                .ref('/users/' + result.user.uid)
-                                .set({
-                                    gmail: result.user.email,
-                                    profile_picture: result.additionalUserInfo.profile.picture,
-                                    locale: result.additionalUserInfo.profile.locale,
-                                    first_name: result.additionalUserInfo.profile.given_name,
-                                    family_name: result.additionalUserInfo.profile.family_name,
-                                    signup : true,
-                                    role: 0,
-                                    created_at: Date.now()
-                                }
-                                )
+                            firestoreDB.collection('users').doc(result.user.id).set({
+                                gmail: result.user.email,
+                                profile_picture: result.additionalUserInfo.profile.picture,
+                                locale: result.additionalUserInfo.profile.locale,
+                                first_name: result.additionalUserInfo.profile.given_name,
+                                family_name: result.additionalUserInfo.profile.family_name,
+                                signup: true,
+                                role: 0,
+                                created_at: Date.now()
+                            })
                                 .then(function (snapshot) {
                                     props.setSignup();
                                     props.login(firebase.auth().currentUser);
@@ -77,9 +76,7 @@ const Test = (props) => {
                                 })
                         }
                         else {
-                            firebase
-                                .database()
-                                .ref('/users/' + result.user.uid)
+                            firestoreDB.collection('users').doc(result.user.uid)
                                 .update({
                                     last_logged_in: Date.now()
                                 })
@@ -122,6 +119,7 @@ const Test = (props) => {
             });
             console.log(result);
             if (result.type === 'success') {
+                console.log(result)
                 onSignIn(result);
                 return result.accessToken;
             } else {
@@ -161,15 +159,13 @@ const Test = (props) => {
         console.log(result);
         props.setLoading(true);
         if (result.additionalUserInfo.isNewUser) {
-            firebase
-                .database()
-                .ref('/users/' + result.user.uid)
+            firestoreDB.collection('users').doc(result.user.uid)
                 .set({
                     phone: result.user.phoneNumber,
                     gmail: result.user.email,
                     profile_picture: result.user.photoURL,
                     signup: true,
-                    role : 0,
+                    role: 0,
                     created_at: Date.now()
                 }
                 )
@@ -179,13 +175,16 @@ const Test = (props) => {
             props.login(firebase.auth().currentUser);
         }
         else {
-            firebase
-                .database()
-                .ref('/users/' + result.user.uid)
+
+            firestoreDB.collection('users').doc(result.user.uid)
                 .update({
                     last_logged_in: Date.now()
+                }).then(()=>{
+                    props.login(firebase.auth().currentUser);
                 })
-            props.login(firebase.auth().currentUser);
+                .catch(err=>{
+                    console.log(err)
+                })
         }
 
     };
@@ -244,7 +243,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         setLoading: (bool) => dispatch(loading(bool)),
         login: (user) => dispatch(setUser(user)),
-        setSignup : () => dispatch(signupState(true)),
+        setSignup: () => dispatch(signupState(true)),
     }
 }
 export default connect(null, mapDispatchToProps)(Test);

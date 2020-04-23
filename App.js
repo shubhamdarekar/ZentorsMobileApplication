@@ -4,7 +4,7 @@ import { AppLoading } from 'expo';
 import { Asset } from 'expo-asset';
 import * as Font from 'expo-font';
 import * as firebase from 'firebase';
-import { StatusBar } from 'react-native';
+// import { StatusBar,AsyncStorage } from 'react-native';
 
 
 
@@ -61,12 +61,6 @@ export default function App(props) {
   else {
     return (
       <Provider store={store}>
-      {/* <StatusBar
-        // barStyle={ 'light-content'}
-        // hidden
-        translucent={true}
-        showHideTransition ={'fade'}
-      /> */}
         <RootNavigation />
       </Provider>
     );

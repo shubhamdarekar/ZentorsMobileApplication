@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Dimensions as dim, Text, View, Animated, StatusBar, Alert, ScrollView } from 'react-native';
+import { Dimensions as dim, Animated, StatusBar, Alert, BackHandler } from 'react-native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { FAB } from 'react-native-paper';
 import * as Animatable from 'react-native-animatable'
@@ -8,10 +8,13 @@ import { useIsDrawerOpen } from '@react-navigation/drawer';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { NavigationContainer } from '@react-navigation/native';
-import messageStack from '../screens/messaging/messageStack';
+import MessageStack from '../screens/messaging/messageStack';
 import NotificationConfig from '../notificationConfig';
+import HomeScreen from '../screens/appointment/homeScreen'
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import ListNewServices from '../screens/buyServices/listNewServices';
+import MentorDescription from '../screens/buyServices/mentorDescription';
+import Purchase from '../screens/buyServices/purchase';
 
 
 
@@ -30,31 +33,38 @@ const TabsStack = (props) => {
     const [fabBottom, setFabBottom] = useState(new Animated.Value(70))
     const [fabRight, setFabRight] = useState(new Animated.Value(15))
 
-    const drawer = useIsDrawerOpen();
 
     useEffect(() => {
 
         if (props.route.state) {
             if (props.route.state.index == 1 && !fragmentVisibility) {
-                Animated.timing(fabBottom, {
-                    toValue: 25,
-                    duration: 150
-                }).start()
+                Animated.parallel([
+                    Animated.timing(fabBottom, {
+                        toValue: 25,
+                        duration: 150
+                    }),
+                    Animated.timing(fabRight, {
+                        toValue: dim.get('window').width / 2 - 40,
+                        duration: 150
+                    })
+                ]).start()
 
-                Animated.timing(fabRight, {
-                    toValue: dim.get('window').width / 2 - 40,
-                    duration: 150
-                }).start()
+
+
             }
             else if (props.route.state.index == 0 && !fragmentVisibility) {
-                Animated.timing(fabBottom, {
-                    toValue: 70,
-                    duration: 150
-                }).start()
-                Animated.timing(fabRight, {
-                    toValue: 15,
-                    duration: 150
-                }).start()
+
+                Animated.parallel([
+                    Animated.timing(fabBottom, {
+                        toValue: 70,
+                        duration: 150
+                    }),
+                    Animated.timing(fabRight, {
+                        toValue: 15,
+                        duration: 150
+                    })
+                ]).start()
+
             }
 
         }
@@ -62,46 +72,82 @@ const TabsStack = (props) => {
 
 
     const increaseHeight = () => {
-        Animated.timing(fabBottom, {
-            toValue: dim.get('window').height - 30 - StatusBar.currentHeight - 25,
-            duration: 300
-        }).start()
-
-        Animated.timing(fabRight, {
-            toValue: dim.get('window').width - 55,
-            duration: 300
-        }).start()
 
 
-        Animated.timing(defHeight, {
-            toValue: dim.get('window').height - 30 - StatusBar.currentHeight,
-            duration: 300
-        }).start()
-        Animated.timing(defWidth, {
-            toValue: dim.get('window').width - 20,
-            duration: 300
-        }).start()
+        Animated.parallel([
+            Animated.timing(fabBottom, {
+                toValue: dim.get('window').height - 30 - StatusBar.currentHeight - 25,
+                duration: 300
+            }),
+
+            Animated.timing(fabRight, {
+                toValue: dim.get('window').width - 55,
+                duration: 300
+            }),
+
+
+            Animated.timing(defHeight, {
+                toValue: dim.get('window').height - 30 - StatusBar.currentHeight,
+                duration: 300
+            }),
+
+            Animated.timing(defWidth, {
+                toValue: dim.get('window').width - 20,
+                duration: 300
+            })
+        ]).start()
+
+    }
+
+    const BackHandlerCustom = () => {
+        Alert.alert(
+            'Do you want to really want to leave?',
+            'All the progress will be lost if you leave..',
+            [
+                {
+                    text: 'Stay',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel',
+                },
+                {
+                    text: 'Leave', onPress: () => {
+                        setFragmentVisibility(false);
+                        decreaseHeight();
+                    }
+                },
+            ],
+            { cancelable: false }
+        );
+        return true;
     }
 
     const decreaseHeight = () => {
 
-        Animated.timing(fabBottom, {
-            toValue: 70,
-            duration: 500
-        }).start()
-        Animated.timing(fabRight, {
-            toValue: 15,
-            duration: 500
-        }).start()
+        BackHandler.removeEventListener('hardwareBackPress', BackHandlerCustom);
 
-        Animated.timing(defHeight, {
-            toValue: 0,
-            duration: 300
-        }).start()
-        Animated.timing(defWidth, {
-            toValue: 0,
-            duration: 300
-        }).start()
+        Animated.parallel([
+            Animated.timing(fabBottom, {
+                toValue: 70,
+                duration: 500
+            }),
+            Animated.timing(fabRight, {
+                toValue: 15,
+                duration: 500
+            })
+        ]).start()
+
+        Animated.parallel([
+
+            Animated.timing(defHeight, {
+                toValue: 0,
+                duration: 300
+            }),
+            Animated.timing(defWidth, {
+                toValue: 0,
+                duration: 300
+            })
+        ]).start();
+
     }
 
 
@@ -128,7 +174,7 @@ const TabsStack = (props) => {
                             <MaterialCommunityIcons name="calendar" color={color} size={26} />
                         )
                     }}
-                    component={NotificationConfig}
+                    component={HomeScreen}
                 />
                 <Tabs.Screen
                     name='Messages'
@@ -138,7 +184,7 @@ const TabsStack = (props) => {
                             <MaterialCommunityIcons name="wechat" color={color} size={26} />
                         )
                     }}
-                    component={messageStack}
+                    component={MessageStack}
                 />
             </Tabs.Navigator>
             <Animated.View
@@ -162,9 +208,10 @@ const TabsStack = (props) => {
                         screenOptions={{
                             headerMode: 'none',
                             header: () => null,
-                                                        ...TransitionPresets.SlideFromRightIOS,
+                            ...TransitionPresets.SlideFromRightIOS,
                             gestureEnabled: true,
                             gestureDirection: 'horizontal',
+                            gestureResponseDistance: { horizontal: 500 }
                         }}
                     >
                         <Stack.Screen name="Service List">
@@ -173,60 +220,77 @@ const TabsStack = (props) => {
                                 width={dim.get('window').width - 20}
                             />}
                         </Stack.Screen>
+                        <Stack.Screen name="Mentors description"
+                        >
+                            {props => <MentorDescription {...props}
+                                height={dim.get('window').height - 60 - StatusBar.currentHeight}
+                                width={dim.get('window').width - 20}
+                            />}
+                            </Stack.Screen>
+
+                            <Stack.Screen name="Purchase"
+                            >
+                                {props => <Purchase {...props}
+                                    height={dim.get('window').height - 60 - StatusBar.currentHeight}
+                                    width={dim.get('window').width - 20}
+                                />}
+                            </Stack.Screen>
                     </Stack.Navigator>
                 </NavigationContainer>}
             </Animated.View>
-            <Animatable.View
-                animation='slideInUp'
-                isInteraction={true}
-                duration={500}
-                style={{
-                    position: 'absolute',
-                    margin: 10,
-                    right: fabRight,
-                    bottom: fabBottom,
-                    elevation: 50
-                }}
-            >
-                <FAB
+                    <Animatable.View
+                        animation='slideInUp'
+                        isInteraction={true}
+                        duration={500}
+                        style={{
+                            position: 'absolute',
+                            margin: 10,
+                            right: fabRight,
+                            bottom: fabBottom,
+                            elevation: 50
+                        }}
+                    >
+                        <FAB
 
-                    icon={fragmentVisibility ? "close" : "cart-plus"}
-                    accessibilityLabel={'Shop Service'}
-                    style={{
-                        color: 'white'
-                    }}
-                    theme={{ colors: { accent: '#3d3f42' } }}
-                    color={"white"}
-                    onPress={() => {
-                        if (!fragmentVisibility) {
-                            setFragmentVisibility(true)
-                            increaseHeight()
-                        }
-                        else {
-                            Alert.alert(
-                                'Do you want to really want to leave?',
-                                'All the progress will be lost if you leave..',
-                                [
-                                    {
-                                        text: 'Stay',
-                                        onPress: () => console.log('Cancel Pressed'),
-                                        style: 'cancel',
-                                    },
-                                    {
-                                        text: 'Leave', onPress: () => {
-                                            setFragmentVisibility(false);
-                                            decreaseHeight();
-                                        }
-                                    },
-                                ],
-                                { cancelable: false }
-                            );
+                            icon={fragmentVisibility ? "close" : "cart-plus"}
+                            accessibilityLabel={'Shop Service'}
+                            style={{
+                                color: 'white'
+                            }}
+                            theme={{ colors: { accent: '#3d3f42' } }}
+                            color={"white"}
+                            onPress={() => {
+                                if (!fragmentVisibility) {
+                                    BackHandler.addEventListener('hardwareBackPress', BackHandlerCustom);
+                                    setFragmentVisibility(true)
+                                    increaseHeight()
+                                }
+                                else {
+                                    Alert.alert(
+                                        'Do you want to really want to leave?',
+                                        'All the progress will be lost if you leave..',
+                                        [
+                                            {
+                                                text: 'Stay',
+                                                onPress: () => console.log('Cancel Pressed'),
+                                                style: 'cancel',
+                                            },
+                                            {
+                                                text: 'Leave', onPress: () => {
+                                                    BackHandler.removeEventListener('hardwareBackPress', BackHandlerCustom);
+                                                    setFragmentVisibility(false);
+                                                    decreaseHeight();
+                                                }
+                                            },
+                                        ],
+                                        { cancelable: false }
+                                    );
 
-                        };
-                    }}
-                    small={fragmentVisibility}
-                />
-            </Animatable.View>
+                                };
+                            }}
+                            small={fragmentVisibility}
+                        />
+                    </Animatable.View>
         </React.Fragment>
 
     )

@@ -1,10 +1,36 @@
-import React from 'react';
-import { StyleSheet, Text, View, Image, TouchableWithoutFeedback, Animated, Dimensions, SafeAreaView, ImageBackground, StatusBar,Keyboard } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, Image, TouchableWithoutFeedback, Animated, Dimensions, SafeAreaView, ImageBackground, StatusBar, Keyboard } from 'react-native';
 import * as firebase from 'firebase';
+import 'firebase/firestore'
 import { PanGestureHandler, State, ScrollView } from 'react-native-gesture-handler';
-import { Searchbar,ActivityIndicator } from 'react-native-paper';
+import { Searchbar, ActivityIndicator, Card, Avatar, Button } from 'react-native-paper';
 
 
+const RenderItem = (props) => {
+
+    const [user, setUser] = useState(null)
+
+    useEffect(() => {
+        firebase.firestore().collection('users').doc(props.uid)
+        .get().then(doc =>{
+            setUser(doc.data())
+        })
+    }, [])
+    return (
+        <TouchableWithoutFeedback onPress={() => {
+            props.navigation.navigate('Mentors description', { mentorId: props.uid });
+        }}>
+            <Card elevation={2} style={{ padding: 25 }}>
+                <Card.Cover source={{ uri: user ? user.profile_picture : null }} />
+                <Card.Title title={user ? user.name : null} subtitle="Card Subtitle" left={(props) => {
+                    return (
+                        <Avatar.Image size={50} source={{ uri: user ? user.profile_picture : null }} />
+                    )
+                }} />
+            </Card>
+        </TouchableWithoutFeedback>
+    )
+}
 
 
 export default class App extends React.Component {
@@ -17,6 +43,7 @@ export default class App extends React.Component {
             searchQuery: '',
             OriginalList: [],
             focus: false,
+            mentorList: []
         }
         this.allImages = {}
         this.oldPosition = { x: 0, y: 0 }
@@ -56,18 +83,19 @@ export default class App extends React.Component {
     }
 
     componentDidMount() {
-        this.on((value) => {
-            this.setState(previousState => ({
-                itemList: previousState.itemList.concat([value])
-            }), () => {
-                this.setState({ OriginalList: this.state.itemList })
-            })
+        firebase.firestore().collection('ServiceList')
+        .onSnapshot(querySnapshot=>{
+        var services = [];
+        querySnapshot.forEach(function(doc) {
+            services.push(doc.data());
+        });
+        this.setState({itemList:services});
         })
+        
     }
 
     componentWillUnmount() {
         StatusBar.setHidden(false)
-        this.off();
     }
 
     _onChangeSearch = (query) => {
@@ -75,18 +103,7 @@ export default class App extends React.Component {
         this.setState({ itemList: this.state.OriginalList.filter((item) => item.name.toLowerCase().includes(query.toLowerCase())) })
     }
 
-    get ref() {
-        return firebase.database().ref('/ServiceList/');
-    }
 
-    on = (callback) => {
-        this.ref
-            .on('child_added', snapshot => callback(snapshot.val()));
-    }
-
-    off() {
-        this.ref.off();
-    }
 
     openImage = (index) => {
 
@@ -296,11 +313,11 @@ export default class App extends React.Component {
                     />
                 </View>
                 <ScrollView style={{ flex: 1 }}>
-                    {this.state.itemList.length == 0 && 
-                    <View style={{alignItems: 'center',justifyContent: 'center',flexDirection:'column',flex:1}}>
-                    <ActivityIndicator size={100} animating={true} />
-                    <Text style={{fontSize: 25, fontWeight: 'bold', textAlign: 'center', width: 250, flexWrap: 'wrap',}}>No results found</Text>
-                    </View>
+                    {this.state.itemList.length == 0 &&
+                        <View style={{ alignItems: 'center', justifyContent: 'center', flexDirection: 'column', flex: 1 }}>
+                            <ActivityIndicator size={100} animating={true} />
+                            <Text style={{ fontSize: 25, fontWeight: 'bold', textAlign: 'center', width: 250, flexWrap: 'wrap', }}>No results found</Text>
+                        </View>
                     }
                     {this.state.itemList.map((image, index) => {
                         return (
@@ -345,48 +362,20 @@ export default class App extends React.Component {
                             </TouchableWithoutFeedback>
                         </View>
                         <Animated.View style={[{ flex: 2, zIndex: 1000, backgroundColor: 'white', padding: 20, paddingTop: 50 }, animatedContentStyle]}>
-                            <Text style={{ fontSize: 24, paddingBottom: 10 }}>{this.state.activeImage ? this.state.activeImage.name : ""}</Text>
+                            <Text style={{ fontSize: 35, paddingBottom: 10 }}>{this.state.activeImage ? this.state.activeImage.name : ""}</Text>
+                            <Text style={{ fontSize: 15, paddingBottom: 10 }}>List Of Mentors Available:</Text>
                             <ScrollView >
-                                <Text>{this.state.activeImage ? this.state.activeImage.description : ""}</Text>
-                                <Text>{this.state.activeImage ? this.state.activeImage.description : ""}</Text>
-
-                                <Text>{this.state.activeImage ? this.state.activeImage.description : ""}</Text>
-
-                                <Text>{this.state.activeImage ? this.state.activeImage.description : ""}</Text>
-
-                                <Text>{this.state.activeImage ? this.state.activeImage.description : ""}</Text>
-
-                                <Text>{this.state.activeImage ? this.state.activeImage.description : ""}</Text>
-
-                                <Text>{this.state.activeImage ? this.state.activeImage.description : ""}</Text>
-
-                                <Text>{this.state.activeImage ? this.state.activeImage.description : ""}</Text>
-
-                                <Text>{this.state.activeImage ? this.state.activeImage.description : ""}</Text>
-
-                                <Text>{this.state.activeImage ? this.state.activeImage.description : ""}</Text>
-
-                                <Text>{this.state.activeImage ? this.state.activeImage.description : ""}</Text>
-
-                                <Text>{this.state.activeImage ? this.state.activeImage.description : ""}</Text>
-
-                                <Text>{this.state.activeImage ? this.state.activeImage.description : ""}</Text>
-
-                                <Text>{this.state.activeImage ? this.state.activeImage.description : ""}</Text>
-                                <Text>{this.state.activeImage ? this.state.activeImage.description : ""}</Text>
-                                <Text>{this.state.activeImage ? this.state.activeImage.description : ""}</Text>
-                                <Text>{this.state.activeImage ? this.state.activeImage.description : ""}</Text>
-                                <Text>{this.state.activeImage ? this.state.activeImage.description : ""}</Text>
-                                <Text>{this.state.activeImage ? this.state.activeImage.description : ""}</Text>
-                                <Text>{this.state.activeImage ? this.state.activeImage.description : ""}</Text>
-                                <Text>{this.state.activeImage ? this.state.activeImage.description : ""}</Text>
-                                <Text>{this.state.activeImage ? this.state.activeImage.description : ""}</Text>
-                                <Text>{this.state.activeImage ? this.state.activeImage.description : ""}</Text>
-                                <Text>{this.state.activeImage ? this.state.activeImage.description : ""}</Text>
-                                <Text>{this.state.activeImage ? this.state.activeImage.description : ""}</Text>
-                                <Text>{this.state.activeImage ? this.state.activeImage.description : ""}</Text>
-
+                                {this.state.activeImage && this.state.activeImage.MentorsList && Object.entries(this.state.activeImage.MentorsList).map((item, index) => {
+                                    return (
+                                        <RenderItem key={item[0]} uid={item[1]} {...this.props} />
+                                    )
+                                })}
                             </ScrollView>
+                            <Button raised icon="basket" onPress={()=>{
+                                this.props.navigation.navigate('Purchase',{item:this.state.activeImage.id})
+                            }} style={{backgroundColor:'red'}} mode="contained" >
+                                Buy This Service for $
+    </Button>
                         </Animated.View>
                     </View>
                 </PanGestureHandler>

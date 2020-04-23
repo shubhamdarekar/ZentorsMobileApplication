@@ -10,24 +10,25 @@ const Stack = createStackNavigator();
 const messageStack = (props) => {
     return (
         <Stack.Navigator
-        lazy={false}
+            lazy={false}
             screenOptions={{
                 headerMode: 'float',
                 mode: 'card',
-                ...TransitionPresets.RevealFromBottomAndroid,
-                gestureDirection: 'vertical',
-                gestureEnabled : true,
-                gestureVelocityImpact:0.1
+                ...TransitionPresets.SlideFromRightIOS,
+                gestureEnabled: true,
+                gestureDirection: 'horizontal',
+                gestureResponseDistance: { horizontal: 500 },
+                gestureVelocityImpact:0.5
             }}
         >
-        <Stack.Screen
+            <Stack.Screen
                 name="AllChats"
                 title="Your Messages"
                 component={AllMessages}
             />
             <Stack.Screen
                 name="Chat"
-                
+
                 component={Chat}
             />
         </Stack.Navigator>

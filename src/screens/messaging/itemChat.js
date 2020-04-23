@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { TouchableOpacity ,Text} from 'react-native';
 import * as firebase from "firebase";
+import 'firebase/firestore'
 
 const itemChat = (props) => {
     const [name,setName] = useState("")
     const [avatar,setAvatar] = useState("");
     useEffect(()=>{
-        const ref = firebase.database().ref("/users/"+props.item)
-        ref.once('value').then(snapshot =>{ 
-            setName(snapshot.val().name);
-            setAvatar(snapshot.val().profile_picture);
-        });
-        return() =>{
-            ref.off();
-        }
+        firebase.firestore().collection('users').doc(props.item).get()
+        .then(doc=>{
+            setName(doc.data().name);
+            setAvatar(doc.data().profile_picture);
+        })
     },[])
     return (
         <TouchableOpacity  onPress={() => {

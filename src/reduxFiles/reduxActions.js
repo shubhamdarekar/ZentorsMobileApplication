@@ -1,5 +1,6 @@
 import { AsyncStorage } from 'react-native';
 import * as firebase from 'firebase';
+import 'firebase/firestore';
 
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
@@ -53,9 +54,10 @@ export const setRole = (role) => (
 export const setUser = (user) => dispatch => {
     dispatch(loading(true));
     AsyncStorage.setItem('user', JSON.stringify(user)).then(() => {
-        firebase.database().ref("/users/" + user.uid + '/signup').once('value').then((snapshot) => {
+        firebase.firestore().collection('users').doc(user.uid)
+        .get().then(doc=>{
             console.log('Set called')
-            dispatch(signupState(snapshot.val()))
+            dispatch(signupState(doc.data().signup))
             dispatch(loginUpdate(user))
             dispatch(loading(false));
         }).catch(error => {
@@ -74,9 +76,10 @@ export const getUser = () => dispatch => {
     dispatch(loading(true));
     AsyncStorage.getItem('user').then((user) => {
         if (user) {
-            firebase.database().ref("/users/" + JSON.parse(user).uid).once('value').then((snapshot) => {
-                dispatch(signupState(snapshot.val().signup))
-                dispatch(setRole(snapshot.val().role || 0))
+            firebase.firestore().collection('users').doc(JSON.parse(user).uid)
+            .get().then(doc=>{
+                dispatch(signupState(doc.data().signup))
+                dispatch(setRole(doc.data().role || 0))
                 dispatch(loginUpdate(JSON.parse(user)));
                 dispatch(loading(false));
             }).catch(error => {

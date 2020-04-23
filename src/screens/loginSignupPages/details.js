@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
 import { Button, TextInput, ToastAndroid } from 'react-native';
 import { connect } from 'react-redux';
 import * as firebase from 'firebase/app';
+import 'firebase/firestore';
 import {
     FirebaseRecaptchaVerifier,
     FirebaseRecaptcha
@@ -20,13 +21,15 @@ const Details = (props) => {
     const [email, setEmail] = useState(firebase.auth().currentUser.email);
     const [emailVerified, setEmailVerified] = useState(firebase.auth().currentUser.emailVerified);
     const [name, setName] = useState(firebase.auth().currentUser.displayName);
-    const [profilePicture, setProfilePicture] = useState(firebase.auth().currentUser.profilePicture);
+    const [profilePicture, setProfilePicture] = useState(firebase.auth().currentUser.photoURL);
 
 
     const [verification, setVerification] = useState('');
     const [custom, setCustom] = useState('');
     const [code, setCode] = useState('');
     const [visible, setVisible] = useState(false);
+
+    const firestoreDB = firebase.firestore();
 
 
 
@@ -81,9 +84,7 @@ const Details = (props) => {
 
             var result = firebase.auth().currentUser;
 
-            firebase
-                .database()
-                .ref('/users/' + firebase.auth().currentUser.uid)
+            firestoreDB.collection('users').doc(firebase.auth().currentUser.uid)
                 .update({
                     phone: result.phoneNumber,
                     gmail: result.email,
@@ -305,9 +306,7 @@ const Details = (props) => {
                 props.setLoading(true);
                 props.setUser(firebase.auth().currentUser);
                 updateDetails();
-                firebase
-                .database()
-                .ref('/users/' + firebase.auth().currentUser.uid)
+                firestoreDB.collection('users').doc(firebase.auth().currentUser.uid)
                 .update({
                     signup:false,
                 });
