@@ -13,3 +13,4 @@ web-report/
 # macOS
 .DS_Store
 src/constants/firebaseConfig.js
+src/constants/google-services.json
