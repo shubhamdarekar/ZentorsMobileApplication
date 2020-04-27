@@ -1,40 +1,34 @@
 import React, { useState, useEffect } from 'react';
+import { View } from 'react-native';
 
 import { GiftedChat } from 'react-native-gifted-chat';
 
 import * as firebase from 'firebase';
+import 'firebase/firestore';
 
 const Chat = (props) => {
     const [messages, setMessages] = useState([]);
-    const [firstTime,setFirstTime] = useState(true);
 
     const { itemId } = props.route.params;
 
-    console.log((firebase.auth().currentUser.uid).localeCompare(itemId)>0);
+    // console.log((firebase.auth().currentUser.uid).localeCompare(itemId) > 0);
 
-    const chatId = ((firebase.auth().currentUser.uid).localeCompare(itemId)>0) ? firebase.auth().currentUser.uid + '' + itemId : itemId + '' + firebase.auth().currentUser.uid;
+    const chatId = ((firebase.auth().currentUser.uid).localeCompare(itemId) > 0) ? firebase.auth().currentUser.uid + '' + itemId : itemId + '' + firebase.auth().currentUser.uid;
 
-    const ref = firebase.database().ref('/messages/' + chatId);
+    // const ref = firebase.database().ref('/messages/' + chatId);
 
-    const off = () => {
-        ref.off();
-    }
 
-    const on = (callback) => {
-        ref
-            .on('child_added', snapshot => callback(parse(snapshot)))
-            ;
-    }
+
+
 
     const parse = (snapshot) => {
-        const { timestamp: numberStamp, text, sender: user } = snapshot.val();
-        const { key: _id } = snapshot;
+        const { createdAt: numberStamp, text, sender: user ,_id} = snapshot;
 
-        const timestamp = new Date(numberStamp);
+        const createdAt = Date.parse(numberStamp);
 
         const message = {
             _id,
-            timestamp,
+            createdAt,
             text,
             user,
         };
@@ -46,17 +40,38 @@ const Chat = (props) => {
             const { text, user } = messages[i];
             // 4.
             const message = {
+                _id: Date.now(),
                 text,
                 sender: user,
-                receiver : itemId,
-                timestamp: firebase.database.ServerValue.TIMESTAMP,
+                receiver: itemId,
+                createdAt: new Date().toISOString(),
             };
-            if(firstTime){
-                firebase.database().ref("/users/"+firebase.auth().currentUser.uid+"/recentMessages").push(itemId);
-                firebase.database().ref("/users/"+itemId+"/recentMessages").push(firebase.auth().currentUser.uid);
-                setFirstTime(false);
-            }
-            append(message);
+
+            firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid)
+                .collection("recentMessages").doc("sort").update({
+                    myArr: firebase.firestore.FieldValue.arrayRemove(itemId),
+                }).then(() => {
+                    firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid)
+                        .collection("recentMessages").doc("sort").update({
+                            myArr: firebase.firestore.FieldValue.arrayUnion(itemId)
+                        })
+                }).catch((err) => {
+                    console.log('err')
+                })
+
+            firebase.firestore().collection("users").doc(itemId)
+                .collection("recentMessages").doc("sort").update({
+                    myArr: firebase.firestore.FieldValue.arrayRemove(firebase.auth().currentUser.uid),
+                }).then(() => {
+                    firebase.firestore().collection("users").doc(itemId)
+                        .collection("recentMessages").doc("sort").update({
+                            myArr: firebase.firestore.FieldValue.arrayUnion(firebase.auth().currentUser.uid)
+                        })
+                }).catch((err) => {
+                    console.log('err')
+                })
+
+            firebase.firestore().collection('messages').doc(chatId).collection('messages').doc(new Date().getTime().toString()).set(message)
         }
     }
 
@@ -69,24 +84,44 @@ const Chat = (props) => {
     }
 
     useEffect(() => {
-        on((newMessage) => {
-            setMessages(mes => GiftedChat.append(mes, newMessage));
+        var unSub = null;
+        firebase.firestore().collection('messages').doc(chatId).get().then(doc => {
+            if (!doc.data()) {
+                firebase.firestore().collection('messages').doc(chatId).set({
+                    createdAt:new Date().toISOString()
+                })
+            }
+        }).then(() => {
+            unSub = firebase.firestore().collection('messages').doc(chatId).collection('messages')
+                .onSnapshot(snapshot => {
+                    snapshot.docChanges().forEach(function (change) {
+                        if (change.type === "added") {
+                            
+                            setMessages(mes => GiftedChat.append(mes, parse(change.doc.data())))
+                        }
+                    }
+                    )
+                })
         })
+
+
         return () => {
-            off();
+            try{
+                unSub();
+            }catch{
+            }
         }
     }, [])
 
-    const append = (message) => {
-        ref.push(message)
-    }
 
     return (
-        <GiftedChat
-            messages={messages}
-            onSend={send}
-            user={user()}
-        />
+        
+            <GiftedChat
+                messages={messages}
+                onSend={send}
+                user={user()}
+                keyboardShouldPersistTaps="handled"
+            />
     );
 
 };

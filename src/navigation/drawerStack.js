@@ -29,7 +29,7 @@ const DrawerStack = () => {
             }
         >
             <DrawerN.Screen name='Home' component={TabsStack}/>
-            <DrawerN.Screen name='Settings' component={Details} />
+            <DrawerN.Screen name='Settings' component={Details} />            
         </DrawerN.Navigator>
     )
 }

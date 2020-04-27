@@ -1,6 +1,5 @@
 import React from 'react';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
-import Chat from './chat';
 import AllMessages from './allMessages';
 
 
@@ -23,13 +22,10 @@ const messageStack = (props) => {
         >
             <Stack.Screen
                 name="AllChats"
-                title="Your Messages"
+                options={{
+                headerTitle:"Your Messages",
+                }}
                 component={AllMessages}
-            />
-            <Stack.Screen
-                name="Chat"
-
-                component={Chat}
             />
         </Stack.Navigator>
     );

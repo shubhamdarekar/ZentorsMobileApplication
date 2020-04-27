@@ -1,44 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { Button, View, FlatList, RefreshControl } from 'react-native';
 import * as firebase from 'firebase';
+import 'firebase/firestore';
 import ItemChat from './itemChat';
 
 const allMessages = (props) => {
     const [chatList, setChatList] = useState([]);
 
-    function wait(timeout) {
-        return new Promise(resolve => {
-            setTimeout(resolve, timeout);
-        });
-    }
-
-
-    const ref = firebase.database().ref('/users/' + firebase.auth().currentUser.uid + "/recentMessages");
-
-    const on = (callback) => {
-        ref
-            .on('child_added', snapshot => callback(snapshot.key, snapshot.val()));
-    }
 
 
     useEffect(() => {
-        on((key, value) => {
-            setChatList(mes => {
-                var newArr = [value]
-
-                var final = new Set(newArr.concat(mes))
-
-                return [...final]
-            });
+        var unsubscribe = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection("recentMessages")
+        .doc('sort')
+        .onSnapshot((snapshot)=>{
+            setChatList(snapshot.data().myArr.reverse())
         })
+
         return () => {
-            ref.off();
+            unsubscribe();
             setChatList([]);
         }
     }, [])
 
     const renderItem = ( {item} ) => {
-        
         return (
             <ItemChat item = {item} {...props}/>
         )
@@ -54,7 +38,7 @@ const allMessages = (props) => {
                 keyExtractor={item => item}
             />
             <Button title='HII' onPress={() => {
-                props.navigation.navigate('Chat', { itemId: 'eAbArDWc2yRcGdnu4sq6iwKkGIn1' });
+                props.navigation.navigate('Chat', { itemId: 'gQZRzULyGAPkL5dlHD1eL3MauKo1' });
             }} />
         </View>
     );

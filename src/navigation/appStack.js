@@ -10,12 +10,50 @@ import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import { Notifications } from 'expo';
 import * as firebase from 'firebase';
+import Chat from '../screens/test';
+import { Avatar, Appbar } from 'react-native-paper';
+
+import { TouchableOpacity } from 'react-native';
 
 
 
 
 
 const Stack = createStackNavigator();
+
+const Header = ({ scene, previous, navigation }) => {
+    const { options } = scene.descriptor;
+    const title =
+        options.headerTitle !== undefined
+            ? options.headerTitle
+            : options.title !== undefined
+                ? options.title
+                : scene.route.name;
+
+    return (
+        <Appbar.Header style={{backgroundColor:'#000000'}}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            navigation.pop();
+                        }}
+                    >
+                        <Avatar.Image
+                            size={40}
+                            source={{
+                                uri:
+                                    options.image,
+                            }}
+                        />
+                    </TouchableOpacity>
+            <Appbar.Content
+                title={
+                    title
+                }
+            />
+        </Appbar.Header>
+    );
+};
+
 
 
 
@@ -51,74 +89,15 @@ const AppStack = (props) => {
         ])
     }
 
-    const registerForPushNotificationsAsync = async () => {
-        if (Constants.isDevice) {
-            const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
-            let finalStatus = existingStatus;
-            if (existingStatus !== 'granted') {
-                const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-                finalStatus = status;
-            }
-            if (finalStatus !== 'granted') {
-                alert('Failed to get push token for push notification!');
-                return;
-            }
-            token = await Notifications.getExpoPushTokenAsync();
-            // firebase.database().ref("/users/" + firebase.auth().currentUser.uid+"/expoTokens")
-            //     .push({token:token,Device:Constants.deviceName});
-
-            firebase.database().ref("/activeTokens/" + token.slice(18, -1)).update({
-                active: "yes",
-                expire: Date.now() + 5184000000
-            })
-        } else {
-            alert('Must use physical device for Push Notifications');
-        }
-    }
-
-    const ref = firebase.database().ref("/messages/");
-
-    const on = (callback) => {
-        ref
-            .on('child_changed', snapshot => callback(parse(snapshot)))
-            ;
-    }
-
-    const parse = (snapshot) => {
-        console.log(snapshot)
-        const { timestamp: numberStamp, text, sender: user } = snapshot.val();
-        const { key: _id } = snapshot;
-
-        const timestamp = new Date(numberStamp);
-
-        const message = {
-            _id,
-            timestamp,
-            text,
-            user,
-        };
-        return message
-    }
-    
-
-    const listener = (notification)=>{
-        console.log(notification);
-    }
-
 
     useEffect(() => {
-        registerForPushNotificationsAsync();
         createChannelCategories();
-        var i =0
-        on((newMessage) => {
-            i+=1
-            console.log("Recieved",(i));
+        var sub = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid)
+        .collection('recentMessages').doc('sort').onSnapshot(doc=>{
+            const a = doc.data().myArr
+            console.log(a.length,a[a.length-1])
         })
-
-        const list = Notifications.addListener(listener);
-
-        return ()=>{
-            list.remove();
+        return () => {
         }
     }, [])
 
@@ -128,11 +107,13 @@ const AppStack = (props) => {
             lazy={false}
             screenOptions={{
                 headerMode: 'none',
-                header: () => null,
+                headerShown: false,
                 mode: 'card',
                 ...TransitionPresets.SlideFromRightIOS,
                 gestureDirection: 'horizontal',
-                gestureEnabled: false
+                gestureEnabled: true,
+                gestureResponseDistance: { horizontal: 500 },
+                gestureVelocityImpact: 0.5
             }}
             initialRouteName={props.signup ? "Details" : "Drawer APP"}
         >
@@ -143,6 +124,19 @@ const AppStack = (props) => {
             <Stack.Screen
                 name="Drawer APP"
                 component={DrawerStack}
+            />
+            <Stack.Screen
+                name="Chat"
+                component={Chat}
+                options={({ route }) => ({
+                    title: route.params.name,
+                    image:  route.params.image,
+                    headerShown: true,
+                    headerTitleAlign: 'center',
+                    header: ({ scene, previous, navigation }) => (
+                        <Header scene={scene} previous={previous} navigation={navigation} />
+                    ),
+                })}
             />
         </Stack.Navigator>
     );

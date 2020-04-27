@@ -165,8 +165,8 @@ const Details = (props) => {
     const _emailVerify = async () => {
         try {
             const result = await Google.logInAsync({
-                androidClientId: '258755030225-bj9r4a89oh5tom9alr8h74eca8rk0arj.apps.googleusercontent.com',
-                // iosClientId: '258755030225-bj9r4a89oh5tom9alr8h74eca8rk0arj.apps.googleusercontent.com',
+                androidClientId: '907414218364-j9loh2sb7buvllmrnfkq2gjc58s4nos2.apps.googleusercontent.com',
+                iosClientId: '907414218364-d677aq24p4un9s6m6u9rs9sav7nk9494.apps.googleusercontent.com',
                 scopes: ['profile', 'email'],
             });
             console.log(result);

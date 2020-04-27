@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button, TextInput, ToastAndroid } from 'react-native';
 import { connect } from 'react-redux';
-import { setUser, loading } from '../../reduxFiles/reduxActions';
+import { setUser, loading,signupState } from '../../reduxFiles/reduxActions';
 
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
@@ -74,6 +74,11 @@ const Test = (props) => {
                                     props.setLoading(false);
                                     console.log(error);
                                 })
+
+                            firestoreDB.collection('users').doc(result.user.uid)
+                                .collection('recentMessages').doc("sort").set({
+                                    myArr: []
+                                })
                         }
                         else {
                             firestoreDB.collection('users').doc(result.user.uid)
@@ -113,8 +118,8 @@ const Test = (props) => {
     const signInWithGoogleAsync = async () => {
         try {
             const result = await Google.logInAsync({
-                androidClientId: '258755030225-bj9r4a89oh5tom9alr8h74eca8rk0arj.apps.googleusercontent.com',
-                iosClientId: '258755030225-6fs8dk24orc5u5pst5clef66o4jra69f.apps.googleusercontent.com',
+                androidClientId: '907414218364-j9loh2sb7buvllmrnfkq2gjc58s4nos2.apps.googleusercontent.com',
+                iosClientId: '907414218364-d677aq24p4un9s6m6u9rs9sav7nk9494.apps.googleusercontent.com',
                 scopes: ['profile', 'email'],
             });
             console.log(result);
@@ -172,6 +177,10 @@ const Test = (props) => {
                 .then(function (snapshot) {
                     props.setSignup();
                 })
+            firestoreDB.collection('users').doc(result.user.uid)
+                .collection('recentMessages').doc("sort").set({
+                    myArr: []
+                })
             props.login(firebase.auth().currentUser);
         }
         else {
@@ -179,10 +188,10 @@ const Test = (props) => {
             firestoreDB.collection('users').doc(result.user.uid)
                 .update({
                     last_logged_in: Date.now()
-                }).then(()=>{
+                }).then(() => {
                     props.login(firebase.auth().currentUser);
                 })
-                .catch(err=>{
+                .catch(err => {
                     console.log(err)
                 })
         }
