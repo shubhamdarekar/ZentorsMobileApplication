@@ -45,6 +45,7 @@ const Chat = (props) => {
                 sender: user,
                 receiver: itemId,
                 createdAt: new Date().toISOString(),
+                read:false
             };
 
             firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid)
@@ -88,7 +89,8 @@ const Chat = (props) => {
         firebase.firestore().collection('messages').doc(chatId).get().then(doc => {
             if (!doc.data()) {
                 firebase.firestore().collection('messages').doc(chatId).set({
-                    createdAt:new Date().toISOString()
+                    createdAt:new Date().toISOString(),
+                    users:[itemId,firebase.auth().currentUser.uid]
                 })
             }
         }).then(() => {
@@ -96,7 +98,11 @@ const Chat = (props) => {
                 .onSnapshot(snapshot => {
                     snapshot.docChanges().forEach(function (change) {
                         if (change.type === "added") {
-                            
+                            if(change.doc.data().receiver == firebase.auth().currentUser.uid){
+                                change.doc.ref.update({
+                                    read:true
+                                })
+                            }
                             setMessages(mes => GiftedChat.append(mes, parse(change.doc.data())))
                         }
                     }

@@ -3,13 +3,11 @@ import { Dimensions as dim, Animated, StatusBar, Alert, BackHandler } from 'reac
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { FAB } from 'react-native-paper';
 import * as Animatable from 'react-native-animatable'
-import { useIsDrawerOpen } from '@react-navigation/drawer';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { NavigationContainer } from '@react-navigation/native';
 import MessageStack from '../screens/messaging/messageStack';
-import NotificationConfig from '../notificationConfig';
 import HomeScreen from '../screens/appointment/homeScreen'
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import ListNewServices from '../screens/buyServices/listNewServices';

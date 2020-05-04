@@ -6,12 +6,10 @@ import { connect } from 'react-redux';
 import Details from '../screens/loginSignupPages/details';
 
 
-import Constants from 'expo-constants';
-import * as Permissions from 'expo-permissions';
 import { Notifications } from 'expo';
-import * as firebase from 'firebase';
-import Chat from '../screens/test';
+import Chat from '../screens/messaging/chat';
 import { Avatar, Appbar } from 'react-native-paper';
+
 
 import { TouchableOpacity } from 'react-native';
 
@@ -60,7 +58,6 @@ const Header = ({ scene, previous, navigation }) => {
 
 
 const AppStack = (props) => {
-
     const createChannelCategories = async () => {
         if (Platform.OS === 'android') {
             Notifications.createChannelAndroidAsync('Messages', {
@@ -92,13 +89,6 @@ const AppStack = (props) => {
 
     useEffect(() => {
         createChannelCategories();
-        var sub = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid)
-        .collection('recentMessages').doc('sort').onSnapshot(doc=>{
-            const a = doc.data().myArr
-            console.log(a.length,a[a.length-1])
-        })
-        return () => {
-        }
     }, [])
 
 
